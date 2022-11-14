@@ -7,14 +7,19 @@ import { ScrollView, Pressable, Image, Text, View, StyleSheet, ImageBackground, 
 import { crtheme } from "../bookstore/Bookstore";
 // import { stylist } from '../styles/PublisherPageStyles';
 import { Button, Input, Layout } from "@ui-kitten/components";
-import { } from "react-native-gesture-handler";
 import NeuButton from "../components/NeuButton";
+import { TextInput } from "react-native-paper";
+import { Octicons, Ionicons } from '@expo/vector-icons';
+import { user } from "../bookstore/User";
 
 
-function ShareScreen(props: { pathArray: any; base64Array: any; }, onChange: any) {
+function ShareScreen() {
 
-    const [pathArray, setPathArray] = props.pathArray;
-    const [base64Array, setBase64Array] = props.base64Array;
+    const [path, setPath] = useState('');
+    const [base64, setBase64] = useState('');
+
+    const [postMessage, setPostMessage] = useState('')
+
     type resultType = any
     //* imagePath to show on the screen
     // This function is triggered when the "Select an image" button pressed
@@ -42,8 +47,8 @@ function ShareScreen(props: { pathArray: any; base64Array: any; }, onChange: any
         if (!result.cancelled) {
             let fileExtension = result.uri.substr(result.uri.lastIndexOf(".") + 1);
             //image path for showing on the screen
-            setPathArray(result.uri);
-            setBase64Array(`data:image/${fileExtension};base64,${result.base64}`);
+            setPath(result.uri);
+            setBase64(`data:image/${fileExtension};base64,${result.base64}`);
         }
     };
 
@@ -65,58 +70,93 @@ function ShareScreen(props: { pathArray: any; base64Array: any; }, onChange: any
         if (!result.cancelled) {
             let fileExtension = result.uri.substr(result.uri.lastIndexOf(".") + 1);
             //image path for showing on the screen
-            setPathArray(result.uri);
+            setPath(result.uri);
             //image base64 data
-            setBase64Array(`data:image/${fileExtension};base64,${result.base64}`);
+            setBase64(`data:image/${fileExtension};base64,${result.base64}`);
         }
     };
 
     return (
         <View style={styles.componentView}>
-            <Layout>
-                <Input />
-            </Layout>
-            <Layout style={styles.galleryView}>
-                {pathArray ? <Pressable
+            <View>
+                <TextInput mode='outlined' placeholder='Description' label={'Description'}
+                    style={{ marginBottom: 20 }}
+                    onChangeText={(text) => {
+                        setPostMessage(text)
+                    }}
+                />
+            </View>
+            <View style={styles.galleryView}>
+                {path ? <Pressable
                     style={styles.galleryPhotoDeleteButton}
                     hitSlop={5}
                     onPress={() => {
                         // var delIndex = pathArray.indexOf(item);
-                        setPathArray('');
-                        setBase64Array('');
+                        setPath('');
+                        setBase64('');
                         console.log("item removed");
                     }}
                 >
                     <MaterialIcons name="delete-forever" size={24} color="white" />
                 </Pressable> : null}
-                {pathArray ? <Image source={{ uri: pathArray }} style={styles.featuredImage}></Image> : <ImageBackground source={require('../assets/adaptive-icon.png')} style={styles.featuredImage} />}
-            </Layout>
-            <Layout style={styles.componentRowView}>
-                <View style={styles.roundedButtonContainer}>
-                    <TouchableOpacity style={styles.roundedButton}
-                        onPress={() => {
-                            showImagePicker()
-                        }}>
-                        <MaterialIcons name="photo-library" size={28} color="#e04f4a" />
-                    </TouchableOpacity>
-                </View>
+                {path ? <Image source={{ uri: path }} style={styles.featuredImage}></Image> : <ImageBackground source={require('../assets/adaptive-icon.png')} style={styles.featuredImage} />}
+            </View>
+            <View style={[styles.componentRowView, { marginTop: 20 }]}>
+                <Pressable style={({ pressed }) => pressed ? styles.galleryButtonPressed : styles.galleryButton}
+                    onPress={() => {
+                        showImagePicker()
+                    }}>
+                    <Ionicons name="images-outline" size={28} color="black" />
+                </Pressable>
                 <Pressable style={({ pressed }) => pressed ? styles.galleryButtonPressed : styles.galleryButton}
                     onPress={() => {
                         openCamera()
                     }}>
-                    <MaterialIcons name="add-a-photo" size={28} color="#e04f4a" />
+                    <Ionicons name="camera-outline" size={28} color="black" />
                 </Pressable>
-            </Layout>
+            </View>
+            <Pressable style={({ pressed }) => pressed ? styles.shareButtonPressed : styles.shareButton}
+                onPress={() => {
+                    user.userPosts.sharePost({
+                        postID: 99,
+                        postMessage: postMessage,
+                        postPhoto: path,
+                        postComments: {
+                            comments: []
+                        }
+                    })
+                }}
+            >
+                <Octicons name='flame' size={28} color='black' />
+            </Pressable>
         </View>
     );
 }
 
 
 const styles = StyleSheet.create({
+    shareButton: {
+        backgroundColor: 'white',
+        alignSelf: 'center',
+        paddingHorizontal: 32,
+        paddingVertical: 28,
+        borderRadius: 90,
+        elevation: 3,
+        marginTop: 6
+    },
+    shareButtonPressed: {
+        backgroundColor: 'white',
+        alignSelf: 'center',
+        paddingHorizontal: 32,
+        paddingVertical: 28,
+        borderRadius: 90,
+        elevation: 0,
+        marginTop: 6,
+        transform: [{ scale: 0.9 }]
+    },
     componentView: {
         flex: 1,
-        marginTop: 36,
-        marginBottom: 12
+        paddingHorizontal: 20
     },
     componentRowView: {
         flexDirection: 'row',
@@ -144,10 +184,7 @@ const styles = StyleSheet.create({
     },
     galleryButton: {
         backgroundColor: '#fff',
-        shadowColor: '#000',
-        shadowOffset: { width: 5, height: 13 },
-        shadowRadius: 2,
-        shadowOpacity: 0.8,
+        elevation: 2,
         padding: 15,
         margin: 5,
         borderRadius: 4,
@@ -160,6 +197,8 @@ const styles = StyleSheet.create({
         margin: 6,
         borderRadius: 4,
         width: '50%',
+        alignItems: 'center',
+        transform: [{ scale: 0.95 }]
     },
     galleryScrollView: {
         flex: 1,
@@ -222,7 +261,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         elevation: 1,
-
     },
 });
 

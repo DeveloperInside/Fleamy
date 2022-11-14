@@ -2,7 +2,7 @@ import axios from "axios";
 import { types, flow } from "mobx-state-tree";
 
 //------------------------------------------
-export const theme = types
+const theme = types
     .model({
         myTheme: types.union(types.literal('light'), types.literal('dark')),
         isDarkMode: false,
@@ -14,3 +14,4 @@ export const theme = types
     }))
 
 export const crtheme = theme.create({ myTheme: 'light' })
+

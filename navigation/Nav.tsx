@@ -105,7 +105,7 @@ export const Nav = () => {
             name='title3'
             position='CENTER'
           >
-            {props => <ShareScreen pathArray={[featuredPathString, setFeaturedPathString]} base64Array={[featuredBase64String, setFeaturedBase64String]} />}
+            {props => <ShareScreen />}
           </CurvedBottomBar.Screen>
         </CurvedBottomBar.Navigator>
       </NavigationContainer>
