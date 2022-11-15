@@ -24,10 +24,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundImage": "./assets/icon-bg.png"
-      }
+      },
+      "package": "com.eneshancer.Fleamy"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "60448f1a-1578-4c5f-84ce-ae238fb08dbe"
+      }
     }
   }
 }
