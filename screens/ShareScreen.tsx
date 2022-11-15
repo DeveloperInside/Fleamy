@@ -125,6 +125,9 @@ function ShareScreen() {
                             comments: []
                         }
                     })
+                    alert('Shared')
+                    setPostMessage('')
+                    setPath('')
                 }}
             >
                 <Octicons name='flame' size={28} color='black' />

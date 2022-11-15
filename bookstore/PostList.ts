@@ -7,5 +7,8 @@ export const postListModel = types
     }).actions(self => ({
         sharePost(post){
             self.posts.push(post)
-        }
+        },
+        deletePost(post){
+            self.posts.splice(self.posts.indexOf(post), 1)
+        },
     }))

@@ -11,5 +11,8 @@ export const commentListModel = types
             // self.comments.push({...self.comments, commentID: comm.commentID, commentText:comm.commentText, relative_x:comm.relative_x, relative_y:comm.relative_y})
             // console.log('item added')
             self.comments.push(comm)
+        },
+        delete(comment){
+            self.comments.splice(self.comments.indexOf(comment), 1)
         }
     }))

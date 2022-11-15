@@ -1,45 +1,28 @@
-import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native'
+import { View, Text, Image, TouchableOpacity, Pressable, Dimensions } from 'react-native'
 import React, { useState } from 'react'
-import { Input } from '@ui-kitten/components'
-import { user } from '../bookstore/User'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import { appStyles } from '../styles/AppStyles'
+import { Layout } from '@ui-kitten/components'
 
 export default function CommentComp({ item }) {
     const [visibleComment, setVisibleComment] = useState(false)
-
-    const gesture = Gesture.Pan()
-        .onBegin((e) => {
-            'worklet';
-            console.log('abc begin')
-            // setVisibleComment(true);
-        })
-        .onUpdate((e) => {
-            'worklet';
-        })
-        .onStart((e) => {
-            'worklet';
-            console.log('tapped cccc: ' + JSON.stringify(e.x + '---' + e.y))
-            console.log('abc start')
-            // setVisibleComment(true);
-        })
-        .onEnd((e) => {
-            'worklet';
-            console.log('abc ended')
-            // setVisibleComment(false);
-        })
-        .onFinalize((e) => {
-            'worklet';
-            console.log('abc finalize')
-            // setVisibleComment(false);
-
-        });
-
+    const windowWidth = Dimensions.get('window').width;
+    //
+    const shouldReverse = item.relative_x > windowWidth / 2 ? true : false
+    console.log('should reverse: ' + shouldReverse)
     return (
-            <Pressable style={{}} onPressIn={() => { setVisibleComment(true); console.log('touch in') }} onPressOut={() => { setVisibleComment(false) }}>
-                <View>
-                    <Image style={{ width: 35, height: 35, borderRadius: 90 }} source={{ uri: item.userIdentity.profilePhoto }} />
-                    {visibleComment ? <Text>{item.commentText}</Text> : null}
-                </View>
-            </Pressable>
+        <Pressable style={visibleComment ? { zIndex: 10 } : { zIndex: 1 }} onPressIn={() => { setVisibleComment(true); }} onPressOut={() => { setVisibleComment(false) }}>
+            <View style={styles.rowView}>
+                <Image style={[styles.userImage35]} source={{ uri: item.userIdentity.profilePhoto }} />
+                {visibleComment ?
+                    <View style={[styles.onImageCommentContainer, shouldReverse ? { right: 0, marginRight: 50 } : { left: 0, marginLeft: 50 }]}>
+                            <Layout style={styles.onImageCommentLayout}>
+                            <Text style={styles.usernameText}>{item.userIdentity.username}</Text><Text style={{  }}>{item.commentText}</Text>
+                            </Layout>
+                    </View> : null}
+            </View>
+        </Pressable>
     )
 }
+
+const styles = appStyles

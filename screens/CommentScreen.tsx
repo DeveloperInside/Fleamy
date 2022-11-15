@@ -5,45 +5,24 @@ import { FlatList, Gesture, GestureDetector, ScrollView, TapGestureHandler, Touc
 import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import CommentableImage from '../components/CommentableImage'
 import { user } from '../bookstore/User'
+import { Portal } from 'react-native-paper'
 
 const CommentScreen = observer(() => {
 
-  const friendsList = user.friends.friends
-
-  const posts = user.takePosts
-
-  console.log('posts+++++++++++++++')
-  console.log(posts)
-  console.log('posts---------------')
-
-  const takePosts = () => {
-    const friendPosts = friendsList.forEach((item) => { console.log('item'); console.log(item) })
-  }
-
-  const renderItem = ({ item }) => {
-    console.log('item++++++++++++++++')
-    console.log(item)
-    console.log('item---------------')
-
-    return (
-      <View>
-        {/* <CommentableImage postUserImage={item.profilePhoto} postUserName={item.username} postMessage={item.postMessage} postPhoto={item.postPhoto} /> */}
-        <Text>{item.username}</Text>
-        <Text>{JSON.stringify(item)}</Text>
-      </View>
-    )
-  }
-
   return (
     <View style={styles.container}>
-      <ScrollView>
-      {user.friends.friends.map(useritem => (
-        <View style={{ flex: 1 }}>
-          {useritem.userPosts.posts.map(item => (
-              <CommentableImage item={item} username={useritem.username} profilePhoto={useritem.profilePhoto} userID = {useritem.userID}/>
-          ))}
-        </View>))}
-      </ScrollView>
+      <Portal.Host>
+        <ScrollView>
+          {user.friends.friends.map((useritem, key) => (
+            <View style={{ flex: 1 }} key={key}>
+              {useritem.userPosts.posts.map((item, key) => (
+                <CommentableImage item={item} username={useritem.username} profilePhoto={useritem.profilePhoto} userID={useritem.userID} key={key}/>
+              ))}
+            </View>))}
+          <View style={{ marginBottom: 60 }}></View>
+
+        </ScrollView>
+      </Portal.Host>
     </View>
   )
 })
@@ -51,7 +30,8 @@ const CommentScreen = observer(() => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom:60
+    paddingBottom: 0,
+    backgroundColor: 'white'
   },
   ball: {
     width: 100,
