@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import React, { Component, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 
-import { ScrollView, Pressable, Image, Text, View, StyleSheet, ImageBackground, TouchableOpacity } from "react-native";
+import { ScrollView, Pressable, Image, Text, View, StyleSheet, ImageBackground, TouchableOpacity, Alert } from "react-native";
 // import Colors from '../constants/Colors';
 import { crtheme } from "../bookstore/Bookstore";
 // import { stylist } from '../styles/PublisherPageStyles';
@@ -77,7 +77,7 @@ function ShareScreen() {
     };
 
     return (
-        <View style={styles.componentView}>
+        <Layout style={styles.componentView}>
             <View>
                 <TextInput mode='outlined' placeholder='Description' label={'Description'}
                     style={{ marginBottom: 20 }}
@@ -117,22 +117,27 @@ function ShareScreen() {
             </View>
             <Pressable style={({ pressed }) => pressed ? styles.shareButtonPressed : styles.shareButton}
                 onPress={() => {
-                    user.userPosts.sharePost({
-                        postID: 99,
-                        postMessage: postMessage,
-                        postPhoto: path,
-                        postComments: {
-                            comments: []
-                        }
-                    })
-                    alert('Shared')
-                    setPostMessage('')
-                    setPath('')
+                    if (postMessage && path) {
+                        user.userPosts.sharePost({
+                            postID: 99,
+                            postMessage: postMessage,
+                            postPhoto: path,
+                            postComments: {
+                                comments: []
+                            }
+                        })
+                        Alert.alert('Successful','Your post has been shared. Just go to your profile to have a look.')
+                        setPostMessage('')
+                        setPath('')
+                    } else {
+                        Alert.alert('There are Gaps!','Please set an image and a description!')
+                    }
+
                 }}
             >
                 <Octicons name='flame' size={28} color='black' />
             </Pressable>
-        </View>
+        </Layout>
     );
 }
 
@@ -231,6 +236,7 @@ const styles = StyleSheet.create({
         height: 350,
         resizeMode: 'cover',
         borderRadius: 4,
+        backgroundColor: '#bbb'
     },
     roundedButtonContainer: {
         height: 80,

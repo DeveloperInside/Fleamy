@@ -33,55 +33,55 @@ const ProfileScreen = observer(() => {
   }
   return (
     <>
-      <View style={{ backgroundColor: '#fff', flex: 1 }}>
-        <View style={{ flexDirection: 'row', paddingHorizontal: 12, paddingTop: 6, paddingBottom: 24, alignItems: 'center' }}>
-          <View style={{ paddingHorizontal: 12, alignItems: 'center' }}>
-            <Image source={{ uri: user.profilePhoto }} style={{ width: 75, height: 75, borderRadius: 90 }} />
-            <Text style={{ fontWeight: '600' }}>{user.username}</Text>
-          </View>
-          <View style={{ flexDirection: 'row', paddingBottom: 18 }}>
-            <View style={{ paddingHorizontal: 28, paddingVertical: 12, alignItems: 'center' }}>
-              <Text>Friends</Text>
-              <Text style={{ fontWeight: '600' }}>{user.friends.friends.length}</Text>
+      <Portal.Host>
+        <View style={{ backgroundColor: '#fff', flex: 1 }}>
+          <View style={{ flexDirection: 'row', paddingHorizontal: 12, paddingTop: 6, paddingBottom: 24, alignItems: 'center' }}>
+            <View style={{ paddingHorizontal: 12, alignItems: 'center' }}>
+              <Image source={{ uri: user.profilePhoto }} style={{ width: 75, height: 75, borderRadius: 90 }} />
+              <Text style={{ fontWeight: '600' }}>{user.username}</Text>
             </View>
-            <View style={{ paddingHorizontal: 28, paddingVertical: 12, alignItems: 'center' }}>
-              <Text>Posts</Text>
-              <Text style={{ fontWeight: '600' }}>{user.userPosts.posts.length}</Text>
-            </View>
-          </View>
-        </View>
-        <View style={{ paddingHorizontal: 10 }}>
-          <Text style={{ fontWeight: '600', marginLeft: 12, marginBottom: 8 }}>Posts</Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            {user.userPosts.posts.map((item, key) => (
-              <View key={key} style={{ padding: 3 }}>
-                <Pressable
-                  style={{}}
-                  onPress={() => {
-                    setSelectedPost(item)
-                    setPostModal(true)
-                    console.log('pressed post')
-                  }}
-                >
-                  <Image source={{ uri: item.postPhoto }} style={{ width: windowWidth / 3, height: windowWidth / 3, borderRadius: 6 }} />
-                  {/* <PostView post={item} /> */}
-                </Pressable>
+            <View style={{ flexDirection: 'row', paddingBottom: 18 }}>
+              <View style={{ paddingHorizontal: 28, paddingVertical: 12, alignItems: 'center' }}>
+                <Text>Friends</Text>
+                <Text style={{ fontWeight: '600' }}>{user.friends.friends.length}</Text>
               </View>
-            ))}
+              <View style={{ paddingHorizontal: 28, paddingVertical: 12, alignItems: 'center' }}>
+                <Text>Posts</Text>
+                <Text style={{ fontWeight: '600' }}>{user.userPosts.posts.length}</Text>
+              </View>
+            </View>
           </View>
-        </View>
+          <View style={{ paddingHorizontal: 10 }}>
+            <Text style={{ fontWeight: '600', marginLeft: 12, marginBottom: 8 }}>Posts</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+              {user.userPosts.posts.map((item, key) => (
+                <View key={key} style={{ padding: 3 }}>
+                  <Pressable
+                    style={{}}
+                    onPress={() => {
+                      setSelectedPost(item)
+                      setPostModal(true)
+                      console.log('pressed post')
+                    }}
+                  >
+                    <Image source={{ uri: item.postPhoto }} style={{ width: windowWidth / 3, height: windowWidth / 3, borderRadius: 6 }} />
+                    {/* <PostView post={item} /> */}
+                  </Pressable>
+                </View>
+              ))}
+            </View>
+          </View>
 
-      </View>
-      <View>
-        <Modal
-          visible={showPostModal}
-          style={{}}
-          backdropStyle={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
-          onBackdropPress={() => { setPostModal(false) }}
-        >
-          <View style={{ minWidth: '92%' }}>
-            <GestureHandlerRootView>
-              <Portal.Host>
+        </View>
+        {showPostModal ?
+          <View style={{ position: 'absolute', backgroundColor: 'rgba(0,0,0,0.5)', top: 0, bottom: 0, left: 0, right: 0 }}>
+            <TouchableOpacity
+              style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}
+              onPress={() => { setPostModal(false) }}
+            >
+            </TouchableOpacity>
+            <View style={{ position: 'absolute', top: 40, bottom: 150, left: 20, right: 20 }}>
+              <View style={{ flex: 1 }}>
                 <Popover
                   visible={showSettingsButton}
                   anchor={SettingsButton}
@@ -91,7 +91,16 @@ const ProfileScreen = observer(() => {
                 >
                   <View style={{ paddingHorizontal: 10, paddingVertical: 10 }}>
                     <TouchableOpacity
-                      style={{ flexDirection: 'row', alignItems: 'center' }}
+                      style={{ flexDirection: 'row-reverse', alignItems: 'center', marginBottom: 12 }}
+                      onPress={() => {
+                        setPostModal(false)
+                        setSettingsButton(false)
+                      }}>
+                      <MaterialIcons name="close" size={24} color="black" />
+                      <Text>Close</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ flexDirection: 'row-reverse', alignItems: 'center' }}
                       onPress={() => {
                         setPostModal(false)
                         selectedPost.remove()
@@ -103,11 +112,9 @@ const ProfileScreen = observer(() => {
                   </View>
                 </Popover>
                 <CommentableImage item={selectedPost} username={user.username} profilePhoto={user.profilePhoto} userID={user.userID} />
-              </Portal.Host>
-            </GestureHandlerRootView>
-          </View>
-        </Modal>
-      </View>
+              </View>
+            </View></View> : null}
+      </Portal.Host>
     </>
   )
 }
